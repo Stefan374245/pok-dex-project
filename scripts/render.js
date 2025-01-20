@@ -1,0 +1,86 @@
+let currentPokemonIndex = 0;
+
+function renderAllPokemonCards(pokemonList) {
+    currentPokemon = pokemonList;
+    const display = document.getElementById("pokemon-display");
+    display.innerHTML = "";
+
+    pokemonList.forEach((pokemon) => {
+        display.innerHTML += pokemonCardTemplate(pokemon);
+    });
+}
+
+function renderCategory() {
+    const controlsContainer = document.getElementById("controls");
+    if (!currentPokemon || currentPokemon.length === 0) {
+      controlsContainer.innerHTML = `
+        <p>Filter werden geladen...</p>
+      `;
+      return;
+    }
+  
+    controlsContainer.innerHTML = filterTemplate(pokemonTypes, currentPokemon);
+  }
+
+function renderSinglePokemonCard(pokemon) {
+    toggleLoadingScreen(true);
+    const display = document.getElementById("pokemon-display");
+    display.innerHTML = "";
+    display.innerHTML = pokemonCardTemplate(pokemon);
+    toggleLoadingScreen(false);
+    currentPokemon = [pokemon];
+}
+
+async function renderOverlay(index, evolutions) {
+    const overlay = document.getElementById("overlay");
+    const pokemon = currentPokemon[index];
+
+    if (!pokemon) {
+        overlay.innerHTML = "<p>Fehler: Pokémon nicht gefunden.</p>";
+        overlay.style.display = "flex";
+        return;
+    }
+    currentPokemonIndex = index;
+    
+    if (!evolutions) {
+        evolutions = await fetchEvolutions(pokemon.id);
+    }
+
+    overlay.innerHTML = overlayTemplate(pokemon, evolutions);
+    overlay.style.display = "flex";
+    document.body.style.overflow = "hidden";
+
+    renderStatsBars(pokemon, currentPokemon);
+}
+
+function renderEvolutionCard(evolutions) {
+    if (!evolutions || evolutions.length === 0) {
+        return "<p>Keine Evolution verfügbar</p>";
+    }
+
+    let evolutionHtml = "";
+    for (let i = 0; i < evolutions.length; i++) {
+        const evo = evolutions[i];
+        evolutionHtml += evolutionHtmlTemplate(evo);
+    }
+    return evolutionHtml;
+}
+
+function openPokemonOverlay(pokemonId) {
+    const contentWrapper = document.getElementById("content-wrapper");
+    const pokemon = currentPokemon.find((p) => p.id === pokemonId);
+    if (!pokemon) return;
+
+    const index = currentPokemon.findIndex((p) => p.id === pokemonId);
+    contentWrapper.classList.add("blur");
+    renderOverlay(index);
+}
+
+function closePokemonOverlay() {
+    const overlay = document.getElementById("overlay");
+    const contentWrapper = document.getElementById("content-wrapper");
+
+    overlay.style.display = "none";
+    contentWrapper.classList.remove("blur");
+    document.body.style.overflow = "auto";
+}

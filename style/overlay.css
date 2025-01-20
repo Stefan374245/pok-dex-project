@@ -1,0 +1,150 @@
+.custom-overlay {
+    display: none;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+  }
+  
+  .overlay-content {
+    max-width: 600px;
+    padding: 10px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  }
+ 
+  
+.prev-btn-pkmn, .next-btn-pkmn {
+  position: absolute;
+  top: 16%;
+  font-size: 2rem;
+  color: white;
+  cursor: pointer;
+  user-select: none;
+  transition: ease 0.2s;
+  height: fit-content;
+}
+
+  .overlay-arrow {
+    position: absolute;
+    top: 50%;
+    font-size: 2rem;
+    color: white;
+    cursor: pointer;
+    user-select: none;
+    transition: ease 0.2s;
+  }
+ 
+  
+  .overlay-arrow.left, .prev-btn-pkmn {
+    left: 64px;
+  }
+  
+  .overlay-arrow.right, .next-btn-pkmn {
+    right: 64px;
+  }
+  
+  .btn-close {
+    position: absolute;
+    top: 16px;
+    right: 64px;
+    font-size: 24px;
+    cursor: pointer;
+    transition: ease 0.2s;
+    z-index: 2;
+  }
+
+  .btn-close:hover {
+    transform: scale(1.1);
+  }
+  
+  .carousel-inner {
+    overflow: visible !important;
+  }
+  
+  .carousel-item:not(.active) {
+    display: none !important;
+  }
+  
+  .carousel-caption {
+    bottom: auto !important;
+  }
+  .carousel-indicators {
+    top: 0px;
+  }
+  
+  .carousel-caption-evo {
+    left: 35% !important;
+  }
+  
+  .evolution-section {
+    display: flex;
+  }
+  
+  .evolution-imgs {
+    width: 20% !important;
+  }
+  
+  
+  .loading-gif {
+    width: 160px;
+    height: 160px;
+    margin-bottom: 20px;
+  }
+  
+  .d-none {
+    display: none;
+  }
+  
+  .evolution-section {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin: 10px;
+    text-align: center;
+  }
+  
+  .evolution-section img {
+    max-width: 150px;
+    max-height: 150px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .evolution-section p {
+    font-size: 16px;
+    font-weight: bold;
+    margin-left: 40px;
+  }
+  
+  @media (max-width: 768px) {
+    .evolution-section img {
+      max-width: 100px;
+      max-height: 100px;
+    }
+  
+    .evolution-section p {
+      font-size: 14px;
+    }
+  }
+  
+  @media (max-width: 500px) {
+    .prev-btn-pkmn, .next-btn-pkmn {
+      top: 16%;
+    }
+
+    .btn-close {
+      right: 20px;
+    }
+
+  }
+  
