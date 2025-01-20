@@ -7,12 +7,12 @@ h3 {
 h4 {
     display: flex;
     justify-content: center;
-    color: yellow !important;
+    color: rgb(255,204,1)!important;
     text-shadow: 
-        -1px -1px 0 blue,
-        1px -1px 0 blue,
-        -1px 1px 0 blue,
-        1px 1px 0 blue;
+        -1px -1px 0 rgb(49,102,177),
+        1px -1px 0 rgb(49,102,177),
+        -1px 1px 0 rgb(49,102,177),
+        1px 1px 0 rgb(49,102,177);
     font-weight: bold;
 }
 
@@ -22,4 +22,12 @@ b {
 
 p {
     margin: 0;
+}
+
+hr {
+  border: 3px dotted rgb(13, 57, 117) !important;
+  border-style: none none dotted;
+  color: #fff;
+  padding-top: 2px;
+  opacity: 0.4;
 }

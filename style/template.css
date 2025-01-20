@@ -7,8 +7,8 @@
 }
 
 .pokemon-card {
-  border: 13px solid rgb(175, 171, 171) !important;
-  border-radius: 20px !important;
+  border: 8px solid rgb(49, 102, 177) !important;
+  border-radius: 12px !important;
   max-width: 280px !important;
   transition: transform 0.3s, box-shadow 0.3s;
 }
