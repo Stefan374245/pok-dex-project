@@ -1,5 +1,5 @@
 function pokemonCardTemplate(pokemon) {
-  const pokemonType = pokemon.types[0].type.name;
+  const pokemonType = pokemon.types[0].type.name || "Unbekannt";
   const cardColor =
     typeColors[pokemonType] || "linear-gradient(135deg, #e0e0e0, #ffffff)";
   const artworkUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png`;
@@ -133,26 +133,36 @@ function overlayTemplate(pokemon, evolutions) {
         </div>
       </div>
     </div>
-    <button
-      class="carousel-control-prev"
-      type="button"
-      data-bs-target="#pokemonCarousel"
-      data-bs-slide="prev"
-    >
-      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Vorherige</span>
-    </button>
-    <button
-      class="carousel-control-next"
-      type="button"
-      data-bs-target="#pokemonCarousel"
-      data-bs-slide="next"
-    >
-      <span class="carousel-control-next-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Nächste</span>
-    </button>
+    <div>
+      <button
+        class="carousel-control-prev"
+        type="button"
+        data-bs-target="#pokemonCarousel"
+        data-bs-slide="prev"
+        >
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Vorherige</span>
+      </button>
+      <button
+          class="carousel-control-next"
+          type="button"
+          data-bs-target="#pokemonCarousel"
+          data-bs-slide="next"
+          >
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Nächste</span>
+        </button>
+    </div>
   </div>
-</div>
+  <div id="game-overlay" class="game-overlay">
+        <button onclick="startGame()" class="btn btn-warning">Kampf starten</button>
+    </div>
+     <div class="card pokemon-card">
+          <img src="${artworkUrl}" alt="${pokemon.name}" />
+          <h3>${pokemon.name}</h3>
+          <p>Typ: ${pokemonType}</p>
+          <div class="hp-display">HP: ${getStatValue(pokemon, "hp")}</div>
+        </div>
   `;
 }
 
@@ -183,7 +193,7 @@ function getTypeText(types) {
 }
 
 function filterTemplate() {
-  const typeOptions = generateTypeOptions(pokemonTypes); // Optionen für Typen
+  const typeOptions = generateTypeOptions(pokemonTypes);
   const generationOptions = generateGenerationOptions(pokemonGenerations);
   const bestOfOptions = generateBestOfOptions();
 

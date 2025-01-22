@@ -1,0 +1,124 @@
+.game-wrapper {
+    position: absolute;
+    top: 4%;
+    left: 10%;
+    z-index: 1;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.game-overlay {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+
+#enemy-card, #player-card {
+    border: none !important;
+    height: 360px !important;
+    width: 240px;
+}
+
+#start-battle-btn {
+    margin-top: 20px;
+    margin-left: 188px;
+}
+
+.battle-arena {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.pokemon-card-container {
+    position: relative;
+    width: 200px;
+    height: 300px;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.pokemon-card-container .pokemon-card {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    z-index: 2;
+}
+
+.pokemon-card.played {
+    transform: translateY(-50px);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.vs {
+    font-size: 2rem;
+    font-weight: bold;
+    color: red;
+}
+
+.battle-log {
+    height: 80px !important;
+    font-family: Arial, sans-serif;
+    font-size: 1rem;
+    color: #333;
+    background: #f8f9fa;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    max-height: 300px;
+    overflow-y: auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.log-entry {
+    margin-bottom: 8px;
+    padding: 5px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.log-entry:last-child {
+    border-bottom: none;
+}
+
+.log-player {
+    color: blue;
+    font-weight: bold;
+}
+
+.log-enemy {
+    color: red;
+    font-weight: bold;
+}
+
+.log-damage {
+    color: darkorange;
+    font-weight: bold;
+}
+
+.log-entry.victory {
+    color: green;
+    font-weight: bold;
+    text-align: center;
+    background: rgba(0, 255, 0, 0.1);
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.log-entry.defeat {
+    color: darkred;
+    font-weight: bold;
+    text-align: center;
+    background: rgba(255, 0, 0, 0.1);
+    padding: 10px;
+    border-radius: 5px;
+}

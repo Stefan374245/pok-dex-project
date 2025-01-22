@@ -21,7 +21,7 @@
 }
 
 .overlay-img {
-  width: 30% !important;
+  width: 35% !important;
   height: auto;
 }
 
@@ -37,11 +37,15 @@
 }
 
 .evo-img {
-  width: 50% !important;
+  width: 100% !important;
 }
 
 @media (max-width: 500px) {
   .logo {
     display: none;
+  }
+  .overlay-img {
+    width: 30% !important;
+    height: auto;
   }
 }

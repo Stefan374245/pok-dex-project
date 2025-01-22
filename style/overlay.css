@@ -20,7 +20,7 @@
   
 .prev-btn-pkmn, .next-btn-pkmn {
   position: absolute;
-  top: 16%;
+  top: 20%;
   font-size: 2rem;
   color: white;
   cursor: pointer;
@@ -139,11 +139,16 @@
   
   @media (max-width: 500px) {
     .prev-btn-pkmn, .next-btn-pkmn {
-      top: 16%;
+      top: 15%;
     }
-
+    .prev-btn-pkmn {
+      left: 42%;
+    }
+    .next-btn-pkmn {
+    right: 42%;
+    }
     .btn-close {
-      right: 20px;
+      right: 6%;
     }
 
   }

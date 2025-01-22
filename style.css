@@ -25,7 +25,7 @@
 }
 
 .scrollToTopBtn:hover {
-    transform: scale(1.1); /* Leichtes Vergrößern bei Hover */
+    transform: scale(1.1);
     opacity: 0.9;
 }
 
@@ -59,4 +59,8 @@
     top: 0;
     color: black;
     z-index: 1000;
+}
+
+.scrollToTopBtn:active  {
+    transform: scale(1.2);
 }

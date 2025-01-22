@@ -2,6 +2,7 @@ h3 {
     font-size: 18px !important;
     display: flex;
     justify-content: space-between;
+    margin-top: 8px;
 }
 
 h4 {
@@ -14,6 +15,11 @@ h4 {
         -1px 1px 0 rgb(49,102,177),
         1px 1px 0 rgb(49,102,177);
     font-weight: bold;
+}
+
+h5 {
+    margin-top: 10px !important;
+    margin-bottom: 10px !important;
 }
 
 b {

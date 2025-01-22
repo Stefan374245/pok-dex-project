@@ -6,6 +6,8 @@ async function init() {
   pokemonTypes = await fetchTypesFromAPI();
   pokemonGenerations = await fetchGenerationsFromAPI();
   renderCategory();
+
+  console.log("Pokédex Kampfspiel wird initialisiert...")
 }
 
 async function fetchAllPokemons() {
