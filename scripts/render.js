@@ -68,10 +68,16 @@ function renderEvolutionCard(evolutions) {
 
 function openPokemonOverlay(pokemonId) {
     const contentWrapper = document.getElementById("content-wrapper");
-    const pokemon = currentPokemon.find((p) => p.id === pokemonId);
+    let pokemon = null;
+    let index = -1;
+    for (let i = 0; i < currentPokemon.length; i++) {
+        if (currentPokemon[i].id === pokemonId) {
+            pokemon = currentPokemon[i];
+            index = i;
+            break;
+        }
+    }
     if (!pokemon) return;
-
-    const index = currentPokemon.findIndex((p) => p.id === pokemonId);
     contentWrapper.classList.add("blur");
     renderOverlay(index);
 }

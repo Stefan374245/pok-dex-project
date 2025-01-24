@@ -55,23 +55,35 @@ async function showHighestAttack() {
 }
 
 
-async function showHighestSpeed() {
+async function showHighestSpeed(allPokemons) {
     toggleLoadingScreen(true);
-    const allPokemon = await fetchAllPokemonDetails();
-
-    let bestDefensePokemon = null;
-    let highestDefense = 0;
-
-    for (let i = 0; i < allPokemon.length; i++) {
-        const pokemon = allPokemon[i];
-        const defense = getStatValue(pokemon, "speed");
-
-        if (defense > highestDefense) {
-            highestDefense = defense;
-            bestDefensePokemon = pokemon;
-        }
+  
+    if (!allPokemons || allPokemons.length === 0) {
+      allPokemons = await fetchAllPokemonDetails(limit=1000);
     }
-
-    renderSinglePokemonCard(bestDefensePokemon);
+  
+    let bestSpeedPokemon = null;
+    let highestSpeed = 0;
+  
+    for (let i = 0; i < allPokemons.length; i++) {
+      const pokemon = allPokemons[i];
+      const speed = getStatValue(pokemon, "speed");
+  
+      if (speed > highestSpeed) {
+        highestSpeed = speed;
+        bestSpeedPokemon = pokemon;
+      }
+    }
+  
+    if (bestSpeedPokemon) {
+      console.log(
+        `Das schnellste Pokémon ist ${bestSpeedPokemon.name} mit einer Geschwindigkeit von ${highestSpeed}`
+      );
+      renderSinglePokemonCard(bestSpeedPokemon);
+    } else {
+      console.log("Keine Pokémon gefunden.");
+    }
+  
     toggleLoadingScreen(false);
-}
+  }
+  

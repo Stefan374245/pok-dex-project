@@ -154,15 +154,6 @@ function overlayTemplate(pokemon, evolutions) {
         </button>
     </div>
   </div>
-  <div id="game-overlay" class="game-overlay">
-        <button onclick="startGame()" class="btn btn-warning">Kampf starten</button>
-    </div>
-     <div class="card pokemon-card">
-          <img src="${artworkUrl}" alt="${pokemon.name}" />
-          <h3>${pokemon.name}</h3>
-          <p>Typ: ${pokemonType}</p>
-          <div class="hp-display">HP: ${getStatValue(pokemon, "hp")}</div>
-        </div>
   `;
 }
 

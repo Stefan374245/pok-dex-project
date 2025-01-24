@@ -5,6 +5,78 @@ function filterAndShowPokemons(searchInput) {
   renderAllPokemonCards(currentPokemon);
 }
 
+function resetOffset() {
+  offset = 0;
+}
+
+function resetToFetchMorePokemons() {
+  resetOffset();
+  document.getElementById("load-more-pokemon").onclick = fetchMorePokemons;
+}
+
+let loadMoreButton = document.getElementById("load-more-pokemon");
+
+async function filterByType(type, limit = 15) {
+  toggleLoadingScreen(true);
+
+  try {
+    const pokemonListResponse = await fetch("https://pokeapi.co/api/v2/type/" + type);
+    const pokemonListData = await pokemonListResponse.json();
+
+    const pokemonUrls = pokemonListData.pokemon.map(
+      (pokemonEntry) => pokemonEntry.pokemon.url
+    );
+
+    const filteredPokemons = [];
+
+    for (let i = 0; filteredPokemons.length <= limit; i++) {
+      const pokemonResponse = await fetch(pokemonUrls[i]);
+      const pokemonDetails = await pokemonResponse.json();
+      filteredPokemons.push(pokemonDetails);
+
+    }
+
+    renderAllPokemonCards(filteredPokemons);
+  } catch (error) {
+    console.error("Fehler beim Filtern nach Typ:", error);
+  } finally {
+    toggleLoadingScreen(false);
+  }
+}
+
+
+async function filterByGeneration(generation, limit = 15) {
+  toggleLoadingScreen(true);
+
+  try {
+    const generationResponse = await fetch(
+      `https://pokeapi.co/api/v2/generation/${generation}`
+    );
+    const generationData = await generationResponse.json();
+
+    const speciesUrls = generationData.pokemon_species.map(
+      (species) => `https://pokeapi.co/api/v2/pokemon/${species.name}`
+    );
+    const filteredPokemons = [];
+    for (let i = 0; filteredPokemons.length <= limit; i++) {
+      const pokemonResponse = await fetch(speciesUrls[i]);
+      const pokemonDetails = await pokemonResponse.json();
+      filteredPokemons.push(pokemonDetails);
+
+      if (filteredPokemons.length >= limit) {
+        break;
+      }
+    }
+
+    renderAllPokemonCards(filteredPokemons);
+  } catch (error) {
+    console.error("Fehler beim Filtern nach Generation:", error);
+  } finally {
+    toggleLoadingScreen(false);
+  }
+}
+
+
 async function fetchGenerationSpecies(generation) {
   try {
     const response = await fetch(
@@ -14,65 +86,18 @@ async function fetchGenerationSpecies(generation) {
     const speciesNames = [];
     for (let i = 0; i < data.pokemon_species.length; i++) {
       speciesNames.push(data.pokemon_species[i].name);
+
     }
-    return speciesNames;
   } catch (error) {
     console.error("Fehler beim Abrufen der Generation:", error);
     return [];
   }
 }
 
-async function filterByType(type, allPokemons) {
-  toggleLoadingScreen(true);
-  if (!allPokemons || allPokemons.length === 0) {
-    allPokemons = await fetchAllPokemonDetails();
+function loadMoreTypesOrGeneration(allPokemons, limit = 15) {
+  if (currentFilter.type) {
+    filterByType(currentFilter.type, allPokemons, limit);
+  } else if (currentFilter.generation) {
+    filterByGeneration(currentFilter.generation, allPokemons, limit);
   }
-
-  if (type === "all") {
-    renderAllPokemonCards(allPokemons);
-    toggleLoadingScreen(false);
-    return;
-  }
-
-  const filteredPokemons = [];
-
-  for (let i = 0; i < allPokemons.length; i++) {
-    const pokemon = allPokemons[i];
-
-    for (let j = 0; j < pokemon.types.length; j++) {
-      if (pokemon.types[j].type.name === type) {
-        filteredPokemons.push(pokemon);
-        break;
-      }
-    }
-  }
-  renderAllPokemonCards(filteredPokemons);
-  toggleLoadingScreen(false);
-}
-
-async function filterByGeneration(generation, allPokemons) {
-  toggleLoadingScreen(true);
-  if (!allPokemons || allPokemons.length === 0) {
-    allPokemons = await fetchAllPokemonDetails();
-  }
-
-  if (generation === "all") {
-    renderAllPokemonCards(allPokemons);
-    toggleLoadingScreen(false);
-    return;
-  }
-  const pokemonSpecies = await fetchGenerationSpecies(generation);
-  const filteredPokemons = [];
-  for (let i = 0; i < allPokemons.length; i++) {
-    const pokemon = allPokemons[i];
-
-    for (let j = 0; j < pokemonSpecies.length; j++) {
-      if (pokemon.name === pokemonSpecies[j]) {
-        filteredPokemons.push(pokemon);
-        break;
-      }
-    }
-  }
-  renderAllPokemonCards(filteredPokemons);
-  toggleLoadingScreen(false);
 }

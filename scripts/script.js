@@ -6,8 +6,6 @@ async function init() {
   pokemonTypes = await fetchTypesFromAPI();
   pokemonGenerations = await fetchGenerationsFromAPI();
   renderCategory();
-
-  console.log("Pokédex Kampfspiel wird initialisiert...")
 }
 
 async function fetchAllPokemons() {
@@ -35,20 +33,22 @@ async function fetchAllPokemons() {
   }
 }
 
-async function fetchAllPokemonDetails() {
+async function fetchAllPokemonDetails(limit = 15) {
   const pokemonListResponse = await fetch(
     "https://pokeapi.co/api/v2/pokemon?limit=1010"
   );
-  const pokemonListData = await pokemonListResponse.json();
-
+const pokemonListData = await pokemonListResponse.json();  
   const allPokemonDetails = [];
 
   for (let i = 0; i < pokemonListData.results.length; i++) {
     const pokemonInfoResponse = await fetch(pokemonListData.results[i].url);
     const pokemonInfo = await pokemonInfoResponse.json();
     allPokemonDetails.push(pokemonInfo);
+
+    if (allPokemonDetails.length >= limit) {
+      return allPokemonDetails;
+    }
   }
-  return allPokemonDetails;
 }
 
 async function fetchMorePokemons() {
@@ -61,8 +61,11 @@ async function fetchMorePokemons() {
 async function fetchEvolutions(pokemonId) {
   try {
     const speciesData = await (
-      await fetch(`https://pokeapi.co/api/v2/pokemon-species/${pokemonId}`)).json();
-    const evolutionData = await ( await fetch(speciesData.evolution_chain.url)).json();
+      await fetch(`https://pokeapi.co/api/v2/pokemon-species/${pokemonId}`)
+    ).json();
+    const evolutionData = await (
+      await fetch(speciesData.evolution_chain.url)
+    ).json();
     let current = evolutionData.chain;
     const evolutions = [];
     while (current) {

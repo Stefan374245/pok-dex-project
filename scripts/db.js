@@ -41,5 +41,3 @@ const typeIcons = {
     flying: "./assets/typeIcons/Battrio_Flying_type.png",
     bug: "./assets/typeIcons/Battrio_Bug_type.png",
 };
-
-const colors = ['#ff4d4d', '#4d94ff', '#ffd24d', '#4dff88', '#a64dff', '#ffa64d'];
