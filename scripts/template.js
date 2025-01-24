@@ -186,7 +186,6 @@ function getTypeText(types) {
 function filterTemplate() {
   const typeOptions = generateTypeOptions(pokemonTypes);
   const generationOptions = generateGenerationOptions(pokemonGenerations);
-  const bestOfOptions = generateBestOfOptions();
 
   return `
     <div id="filter-controls" class="filter-controls">
@@ -204,14 +203,6 @@ function filterTemplate() {
         </button>
         <ul class="dropdown-menu">
           ${generationOptions}
-        </ul>
-      </div>
-      <div class="dropdown">
-        <button class="btn btn-warning custom-btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-          Best-of
-        </button>
-        <ul class="dropdown-menu">
-          ${bestOfOptions}
         </ul>
       </div>
     </div>
@@ -232,21 +223,6 @@ function generateGenerationOptions(generations) {
   for (let i = 0; i < generations.length; i++) {
     const displayName = `Generation ${i + 1}`;
     options += `<li><button class="dropdown-item" onclick="filterByGeneration(${i + 1})">${displayName}</button></li>`;
-  }
-  return options;
-}
-
-function generateBestOfOptions() {
-  let options = "";
-  const bestOfCategories = [
-    { label: "Höchste Werte", action: "showBestStats()" },
-    { label: "Stärkster Angreifer", action: "showHighestAttack()" },
-    { label: "Schnellstes Pokémon", action: "showHighestSpeed()" },
-  ];
-
-  for (let i = 0; i < bestOfCategories.length; i++) {
-    const category = bestOfCategories[i];
-    options += `<li><button class="dropdown-item" onclick="${category.action}">${category.label}</button></li>`;
   }
   return options;
 }

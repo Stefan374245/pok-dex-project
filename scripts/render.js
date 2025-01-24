@@ -70,6 +70,7 @@ function openPokemonOverlay(pokemonId) {
     const contentWrapper = document.getElementById("content-wrapper");
     let pokemon = null;
     let index = -1;
+
     for (let i = 0; i < currentPokemon.length; i++) {
         if (currentPokemon[i].id === pokemonId) {
             pokemon = currentPokemon[i];
