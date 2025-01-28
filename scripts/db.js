@@ -2,9 +2,16 @@ let allPokemon = [];
 let offset = 0;
 let isLoading = false;
 let currentPokemon = [];
+let currentPokemonIndex = 0;
 let globalEvolutions = [];
+let currentFilter = { type: null, generation: null };
 let pokemonTypes = [];
 let pokemonGenerations = [];
+let filteredPokemons = [];
+
+let AUDIO_openPkmn = new Audio('assets/audio/openOverlay.mp3');
+let AUDIO_nextPkmn = new Audio('assets/audio/nextPkmn.mp3');
+let AUDIO_closeOverlay = new Audio('assets/audio/close.mp3');
 
 const typeColors = {
     fire: "linear-gradient(135deg, #ff4500, #ff8c00, #ffd700, #ffffff)",

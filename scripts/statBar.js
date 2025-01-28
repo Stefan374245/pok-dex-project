@@ -1,13 +1,12 @@
 function renderStatsBars(pokemon, allPokemonStats) {
     const chartContainer = document.querySelector('.stats-bar-chart');
     chartContainer.innerHTML = '';
-  
     const labels = ['HP', 'Angriff', 'Verteidigung', 'Spez. Angriff', 'Spez. Verteidigung', 'Initiative'];
     const colors = ['#ff6384', '#36a2eb', '#ffcd56', '#4bc0c0', '#9966ff', '#ff9f40'];
- 
     const maxStats = calculateMaxStats(allPokemonStats);
   
     let maxScale = 0;
+    
     for (let i = 0; i < maxStats.length; i++) {
       if (maxStats[i] > maxScale) {
         maxScale = maxStats[i];
@@ -17,11 +16,7 @@ function renderStatsBars(pokemon, allPokemonStats) {
     let chartHTML = '';
     for (let i = 0; i < labels.length; i++) {
       chartHTML += createStatGroupHTML(
-        labels[i],
-        pokemon.stats[i]?.base_stat || 0,
-        maxStats[i],
-        maxScale,
-        colors[i]
+        labels[i],pokemon.stats[i]?.base_stat || 0,maxStats[i],maxScale,colors[i]
       );
     }
     chartContainer.innerHTML = chartHTML;

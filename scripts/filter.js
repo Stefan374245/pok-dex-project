@@ -5,7 +5,7 @@ function filterAndShowPokemons(searchInput) {
   renderAllPokemonCards(currentPokemon);
 }
 
-function resetOffset() {
+/*function resetOffset() {
   offset = 0;
 }
 
@@ -13,13 +13,12 @@ function resetToFetchMorePokemons() {
   resetOffset();
   document.getElementById("load-more-pokemon").onclick = fetchMorePokemons;
 }
+;*/
 
-let loadMoreButton = document.getElementById("load-more-pokemon");
-
-async function filterByType(type, offset = 0, limit = 15) {
+async function filterByType(type, offset = 0, limit = 15, filteredPokemons = [], loadMore = false) {
   toggleLoadingScreen(true);
   let loadbtn = document.getElementById('load-more-button');
-  currentFilter = { type: null, type };
+  currentFilter = { type, generation: null };
 
   try {
     const pokemonListResponse = await fetch("https://pokeapi.co/api/v2/type/" + type);
@@ -28,58 +27,49 @@ async function filterByType(type, offset = 0, limit = 15) {
     const pokemonUrls = pokemonListData.pokemon.map(
       (pokemonEntry) => pokemonEntry.pokemon.url
     );
-
-    const filteredPokemons = [];
-
     for (let i = offset; filteredPokemons.length <= limit; i++) {
       const pokemonResponse = await fetch(pokemonUrls[i]);
       const pokemonDetails = await pokemonResponse.json();
       filteredPokemons.push(pokemonDetails);
-      offset++
+      offset++;
     }
 
-    renderAllPokemonCards(filteredPokemons);
+    renderAllPokemonCards(filteredPokemons, loadMore);
   } catch (error) {
     console.error("Fehler beim Filtern nach Typ:", error);
   } finally {
-    loadbtn.setAttribute(
-      "onclick",
-      `loadMoreTypesOrGeneration(${offset}, ${limit})`
-    );
+    loadbtn.setAttribute("onclick",`loadMoreTypesOrGeneration(${offset})`);
     toggleLoadingScreen(false);
   }
 }
 
-
-async function filterByGeneration(generation, offset = 0, limit = 15) {
-
+async function filterByGeneration(generation, offset = 0, limit = 15, filteredPokemons = [], loadMore = false) {
   toggleLoadingScreen(true);
   let loadbtn = document.getElementById('load-more-button');
   currentFilter = { type: null, generation };
 
   try {
     const generationResponse = await fetch( `https://pokeapi.co/api/v2/generation/${generation}`);
-
     const generationData = await generationResponse.json();
 
     const speciesUrls = generationData.pokemon_species.map((species) => `https://pokeapi.co/api/v2/pokemon/${species.name}`);
-    const filteredPokemons = [];
-    
+
     for (let i = offset; filteredPokemons.length <= limit; i++) {
       const pokemonResponse = await fetch(speciesUrls[i]);
       const pokemonDetails = await pokemonResponse.json();
       filteredPokemons.push(pokemonDetails);
-      offset++
+      offset++;
     }
-      renderAllPokemonCards(filteredPokemons);
+
+      renderAllPokemonCards(filteredPokemons, loadMore);
   } catch (error) {
     console.error("Fehler beim Filtern nach Generation:", error);
   } finally {
-    loadbtn.setAttribute("onclick",`loadMoreTypesOrGeneration(${offset}, ${limit})`);
+    
+    loadbtn.setAttribute("onclick",`loadMoreTypesOrGeneration(${offset})`);
     toggleLoadingScreen(false);
   }
 }
-
 
 async function fetchGenerationSpecies(generation) {
   try {
@@ -96,10 +86,11 @@ async function fetchGenerationSpecies(generation) {
   }
 }
 
-function loadMoreTypesOrGeneration(offset) {
+function loadMoreTypesOrGeneration(offset, filteredPokemons = []) {
+ 
   if (currentFilter.type) {
-    filterByType(currentFilter.type, offset);
+    filterByType(currentFilter.type, offset, 15, filteredPokemons, true);
   } else if (currentFilter.generation) {
-    filterByGeneration(currentFilter.generation, offset);
+    filterByGeneration(currentFilter.generation, offset, 15, filteredPokemons, true);
   }
 }

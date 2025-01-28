@@ -1,6 +1,6 @@
 async function init() {
   await fetchAllPokemons();
-  currentPokemon = allPokemon;
+  currentPokemon = [...allPokemon];
   renderAllPokemonCards(currentPokemon);
 
   pokemonTypes = await fetchTypesFromAPI();
@@ -13,18 +13,18 @@ async function fetchAllPokemons() {
   toggleLoadingScreen(true);
 
   try {
-    const pokemonListResponse = await fetch(
-      `https://pokeapi.co/api/v2/pokemon?limit=20&offset=${offset}`
-    );
+    const pokemonListResponse = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=20&offset=${offset}`);
     const pokemonListData = await pokemonListResponse.json();
 
+    const newPokemons = [];
     for (let j = 0; j < pokemonListData.results.length; j++) {
       const pokemonInfoResponse = await fetch(pokemonListData.results[j].url);
       const pokemonInfo = await pokemonInfoResponse.json();
-      allPokemon.push(pokemonInfo);
+      newPokemons.push(pokemonInfo);
     }
 
-    renderAllPokemonCards(allPokemon);
+    allPokemon = [...allPokemon, ...newPokemons];
+    renderAllPokemonCards(newPokemons);
     offset += 20;
   } catch (error) {
     display.innerHTML = `<p>Fehler beim Laden der Pokémon: ${error.message}</p>`;
@@ -37,7 +37,7 @@ async function fetchAllPokemonDetails(limit = 15) {
   const pokemonListResponse = await fetch(
     "https://pokeapi.co/api/v2/pokemon?limit=1010"
   );
-const pokemonListData = await pokemonListResponse.json();  
+  const pokemonListData = await pokemonListResponse.json();  
   const allPokemonDetails = [];
 
   for (let i = 0; i < pokemonListData.results.length; i++) {
@@ -54,26 +54,31 @@ const pokemonListData = await pokemonListResponse.json();
 async function fetchMorePokemons() {
   if (isLoading) return;
   isLoading = true;
-  await fetchAllPokemons();
-  isLoading = false;
+
+  try {
+    await fetchAllPokemons();
+  } catch (error) {
+    console.error("Fehler beim Laden weiterer Pokémon:", error);
+  } finally {
+    isLoading = false;
+  }
 }
 
 async function fetchEvolutions(pokemonId) {
   try {
     const speciesData = await (
-      await fetch(`https://pokeapi.co/api/v2/pokemon-species/${pokemonId}`)
-    ).json();
+      await fetch(`https://pokeapi.co/api/v2/pokemon-species/${pokemonId}`)).json();
     const evolutionData = await (
-      await fetch(speciesData.evolution_chain.url)
-    ).json();
+      await fetch(speciesData.evolution_chain.url)).json();
+      
     let current = evolutionData.chain;
-    const evolutions = [];
+    globalEvolutions = [];
     while (current) {
       const id = current.species.url.split("/").slice(-2, -1)[0];
-      evolutions.push({ id, name: current.species.name });
+      globalEvolutions.push({ id, name: current.species.name });
       current = current.evolves_to[0];
     }
-    return evolutions;
+    return globalEvolutions;
   } catch (error) {
     console.error("Fehler beim Abrufen der Evolutionsdaten:", error);
     return [];
@@ -104,19 +109,15 @@ async function navigatePokemon(direction) {
   }
   const pokemon = currentPokemon[currentPokemonIndex];
   const evolutions = await fetchEvolutions(pokemon.id);
+  AUDIO_nextPkmn.play();
   renderOverlay(currentPokemonIndex, evolutions);
 }
 
 async function fetchTypesFromAPI() {
-  const cachedTypes = localStorage.getItem("pokemonTypes");
-  if (cachedTypes) {
-    return JSON.parse(cachedTypes);
-  }
   try {
     const response = await fetch("https://pokeapi.co/api/v2/type/");
     const data = await response.json();
 
-    localStorage.setItem("pokemonTypes", JSON.stringify(data.results));
     return data.results;
   } catch (error) {
     console.error("Fehler beim Abrufen der Typen:", error);
@@ -125,15 +126,9 @@ async function fetchTypesFromAPI() {
 }
 
 async function fetchGenerationsFromAPI() {
-  const cachedGenerations = localStorage.getItem("pokemonGenerations");
-  if (cachedGenerations) {
-    return JSON.parse(cachedGenerations);
-  }
   try {
     const response = await fetch("https://pokeapi.co/api/v2/generation/");
     const data = await response.json();
-
-    localStorage.setItem("pokemonGenerations", JSON.stringify(data.results));
 
     return data.results;
   } catch (error) {
