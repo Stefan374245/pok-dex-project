@@ -1,17 +1,44 @@
 async function init() {
+  toggleLoadingScreen(true);
   await fetchAllPokemons();
   currentPokemon = [...allPokemon];
-  renderAllPokemonCards(currentPokemon);
-
   pokemonTypes = await fetchTypesFromAPI();
   pokemonGenerations = await fetchGenerationsFromAPI();
   renderCategory();
+  toggleLoadingScreen(false);
+  document.getElementById("search-bar").addEventListener("blur", resetSearch);
+  document.getElementById("loading-info").style.display = "block"; 
+  fetchALLPokemonToSearch().then(() => {
+    document.getElementById("loading-info").style.display = "none";
+  });
+}
+
+async function fetchALLPokemonToSearch() {
+  try {
+    const pokemonListResponse = await fetch("https://pokeapi.co/api/v2/pokemon?limit=1010");
+    const pokemonListData = await pokemonListResponse.json();
+
+    const batchSize = 50;
+    for (let i = 20; i < pokemonListData.results.length; i += batchSize) {
+      const batch = pokemonListData.results.slice(i, i + batchSize);
+
+      const batchPokemon = await Promise.all(
+        batch.map(async (pokemon) => {
+          const pokemonInfoResponse = await fetch(pokemon.url);
+          return await pokemonInfoResponse.json();
+        })
+      );
+
+      allPokemon = [...allPokemon, ...batchPokemon];
+    }
+  } catch (error) {
+    console.error("Fehler beim Laden aller Pokémon:", error);
+  }
 }
 
 async function fetchAllPokemons() {
   const display = document.getElementById("pokemon-display");
-  toggleLoadingScreen(true);
-
+  
   try {
     const pokemonListResponse = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=20&offset=${offset}`);
     const pokemonListData = await pokemonListResponse.json();
@@ -34,12 +61,10 @@ async function fetchAllPokemons() {
 }
 
 async function fetchAllPokemonDetails(limit = 15) {
-  const pokemonListResponse = await fetch(
-    "https://pokeapi.co/api/v2/pokemon?limit=1010"
-  );
+  const pokemonListResponse = await fetch("https://pokeapi.co/api/v2/pokemon?limit=1010");
   const pokemonListData = await pokemonListResponse.json();  
-  const allPokemonDetails = [];
 
+  const allPokemonDetails = [];
   for (let i = 0; i < pokemonListData.results.length; i++) {
     const pokemonInfoResponse = await fetch(pokemonListData.results[i].url);
     const pokemonInfo = await pokemonInfoResponse.json();
@@ -52,15 +77,15 @@ async function fetchAllPokemonDetails(limit = 15) {
 }
 
 async function fetchMorePokemons() {
-  if (isLoading) return;
-  isLoading = true;
+  toggleLoadingScreen(true);
+  
 
   try {
     await fetchAllPokemons();
   } catch (error) {
     console.error("Fehler beim Laden weiterer Pokémon:", error);
   } finally {
-    isLoading = false;
+    toggleLoadingScreen(false);
   }
 }
 

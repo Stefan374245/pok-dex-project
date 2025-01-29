@@ -8,6 +8,7 @@ let currentFilter = { type: null, generation: null };
 let pokemonTypes = [];
 let pokemonGenerations = [];
 let filteredPokemons = [];
+let searchTimeout;
 
 let AUDIO_openPkmn = new Audio('assets/audio/openOverlay.mp3');
 let AUDIO_nextPkmn = new Audio('assets/audio/nextPkmn.mp3');

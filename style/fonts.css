@@ -29,7 +29,9 @@ b {
 p {
     margin: 0;
 }
-
+#search-message {
+    color: rgb(13, 57, 117);
+}
 hr {
   border: 3px dotted rgb(13, 57, 117) !important;
   border-style: none none dotted;

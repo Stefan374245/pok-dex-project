@@ -5,7 +5,7 @@ function renderAllPokemonCards(pokemonList, loadMore) {
     if(loadMore === false){
         display.innerHTML = "";
     }
-    
+
     pokemonList.forEach((pokemon) => {
         display.innerHTML += pokemonCardTemplate(pokemon);
     });
@@ -22,14 +22,7 @@ function renderCategory() {
     controlsContainer.innerHTML = filterTemplate(pokemonTypes, currentPokemon);
   }
 
-function renderSinglePokemonCard(pokemon) {
-    toggleLoadingScreen(true);
-    const display = document.getElementById("pokemon-display");
-    display.innerHTML = "";
-    display.innerHTML = pokemonCardTemplate(pokemon);
-    toggleLoadingScreen(false);
-    currentPokemon = [pokemon];
-}
+
 
 async function renderOverlay(index, evolutions) {
     const overlay = document.getElementById("overlay");
@@ -45,7 +38,6 @@ async function renderOverlay(index, evolutions) {
     if (!evolutions) {
         evolutions = await fetchEvolutions(pokemon.id);
     }
-
     overlay.innerHTML = overlayTemplate(pokemon, evolutions);
     overlay.style.display = "flex";
     document.body.style.overflow = "hidden";
@@ -80,8 +72,7 @@ function openPokemonOverlay(pokemonId) {
         }
     }
     if (!pokemon) return;
-    contentWrapper.classList.add("blur");
-    
+    contentWrapper.classList.add("blur"); 
     renderOverlay(index);
 }
 
@@ -93,5 +84,4 @@ function closePokemonOverlay() {
     AUDIO_closeOverlay.play();
     contentWrapper.classList.remove("blur");
     document.body.style.overflow = "auto";
-    
 }

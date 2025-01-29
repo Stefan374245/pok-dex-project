@@ -1,3 +1,9 @@
+#loading-info {
+    font-style: italic;
+    color: #888;
+    display: none;
+  }
+
 .form-control {
     width: 18% !important;
 }

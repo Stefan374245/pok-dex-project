@@ -38,9 +38,13 @@
         class="logo"
       />
       <h1 class="m-0">
-        <a href="index.html"><img src="./assets/logo/pokemon.png" class="logo2" alt="" /></a>
+        <a href="index.html">
+          <img src="./assets/logo/pokemon.png" class="logo2" alt="logo"/>
+        </a>
         
       </h1>
+      <p id="loading-info" class="text-muted text-center mt-2 p-loading">
+        Für eine vollständige suche, bitte warten...</p>
       <input
         id="search-bar"
         type="text"
@@ -48,6 +52,7 @@
         oninput="filterAndShowPokemons(this.value)"
         class="form-control search-bar"
       />
+     
     </header>
 
     <main id="content-wrapper" class="container mt-4">
@@ -80,10 +85,10 @@
       <p>© 2025 Pokédex Projekt</p>
     </footer>
 
+    <script src="./scripts/filter.js"></script>
     <script src="./scripts/script.js"></script>
     <script src="./scripts/db.js"></script>
     <script src="./scripts/statBar.js"></script>
-    <script src="./scripts/filter.js"></script>
     <script src="./scripts/template.js"></script>
     <script src="./scripts/render.js"></script>
   </body>
