@@ -43,8 +43,7 @@
         </a>
         
       </h1>
-      <p id="loading-info" class="text-muted text-center mt-2 p-loading">
-        Für eine vollständige suche, bitte warten...</p>
+     
       <input
         id="search-bar"
         type="text"
@@ -57,6 +56,10 @@
 
     <main id="content-wrapper" class="container mt-4">
       <div id="controls" class="controls"></div>
+      <div class="soundtrack">
+      <button id="music-toggle" class="btn btn-warning music-btn">🎵 Musik an/aus</button>
+      <button id="skip-track" class="btn btn-info music-btn">⏭️ Nächster Song</button>
+    </div>
       <div id="filter-controls" class="filter-controls"></div>
       <div id="pokemon-display" class="pokemon-display row g-4"></div>
      
@@ -64,10 +67,11 @@
         <div
           id="load-more-button"
           onclick="fetchMorePokemons()"
-          class="btn btn-primary"
+          class="btn btn-warning custom-btn music-btn"
         >
           Mehr Pokemon laden
         </div>
+        
       </div>
       <a href="#header" class="scrollToTopBtn"><span>Top</span></a>
     </main>
@@ -82,7 +86,7 @@
     </div>
     <div id="overlay" class="custom-overlay"></div>
     <footer class="text-center py-3 bg-light">
-      <p>© 2025 Pokédex Projekt</p>
+      <p>© 2025 Pokédex Projekt - Powered by Stefan ©</p>
     </footer>
 
     <script src="./scripts/filter.js"></script>

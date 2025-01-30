@@ -11,7 +11,7 @@
   
   .overlay-content {
     max-width: 600px;
-    padding: 10px;
+    padding: 10px 10px;
     border-radius: 10px;
     text-align: center;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
@@ -138,6 +138,10 @@
   }
   
   @media (max-width: 500px) {
+    .overlay-content {
+      padding: 88px 10px;
+    }
+
     .prev-btn-pkmn, .next-btn-pkmn {
       top: 15%;
     }

@@ -1,7 +1,7 @@
 function renderAllPokemonCards(pokemonList, loadMore) {
     currentPokemon = pokemonList;
     const display = document.getElementById("pokemon-display");
-    
+
     if(loadMore === false){
         display.innerHTML = "";
     }
@@ -27,21 +27,16 @@ function renderCategory() {
 async function renderOverlay(index, evolutions) {
     const overlay = document.getElementById("overlay");
     const pokemon = currentPokemon[index];
-
-    if (!pokemon) {
-        overlay.innerHTML = "<p>Fehler: Pokémon nicht gefunden.</p>";
-        overlay.style.display = "flex";
-        return;
-    }
-    currentPokemonIndex = index;
-    
+        if (!pokemon) {
+            overlay.innerHTML = "<p>Fehler: Pokémon nicht gefunden.</p>";
+            overlay.style.display = "flex";
+        return;}
+        currentPokemonIndex = index;
     if (!evolutions) {
-        evolutions = await fetchEvolutions(pokemon.id);
-    }
+        evolutions = await fetchEvolutions(pokemon.id);}
     overlay.innerHTML = overlayTemplate(pokemon, evolutions);
     overlay.style.display = "flex";
-    document.body.style.overflow = "hidden";
-
+        document.body.style.overflow = "hidden";
     renderStatsBars(pokemon, currentPokemon);
 }
 
@@ -68,9 +63,7 @@ function openPokemonOverlay(pokemonId) {
         if (currentPokemon[i].id === pokemonId) {
             pokemon = currentPokemon[i];
             index = i;
-            break;
-        }
-    }
+            break;}}
     if (!pokemon) return;
     contentWrapper.classList.add("blur"); 
     renderOverlay(index);

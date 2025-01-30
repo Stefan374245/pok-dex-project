@@ -14,6 +14,20 @@ let AUDIO_openPkmn = new Audio('assets/audio/openOverlay.mp3');
 let AUDIO_nextPkmn = new Audio('assets/audio/nextPkmn.mp3');
 let AUDIO_closeOverlay = new Audio('assets/audio/close.mp3');
 
+
+
+const soundtracks = [
+    "assets/audio/background-music1.mp3",
+    "assets/audio/background-music2.mp3",
+    "assets/audio/background-music3.mp3",
+    "assets/audio/background-music4.mp3",
+    "assets/audio/background-music5.mp3",
+  ];
+  let currentTrackIndex = 0;
+  let AUDIO_backgroundMusic = new Audio(soundtracks[currentTrackIndex]);
+  AUDIO_backgroundMusic.loop = true;
+    AUDIO_backgroundMusic.volume = 0.1;
+
 const typeColors = {
     fire: "linear-gradient(135deg, #ff4500, #ff8c00, #ffd700, #ffffff)",
     water: "linear-gradient(135deg, #2196F3, #90CAF9, #BBDEFB)",

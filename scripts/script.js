@@ -7,28 +7,47 @@ async function init() {
   renderCategory();
   toggleLoadingScreen(false);
   document.getElementById("search-bar").addEventListener("blur", resetSearch);
-  document.getElementById("loading-info").style.display = "block"; 
-  fetchALLPokemonToSearch().then(() => {
-    document.getElementById("loading-info").style.display = "none";
-  });
+  fetchALLPokemonToSearch();
+  setupMusicControls();
+}
+
+function playMusic(skip = false) {
+  if (skip) {
+    nextTrack();
+  } else {
+    if (AUDIO_backgroundMusic.paused) {
+      AUDIO_backgroundMusic.play();
+    } else {
+      AUDIO_backgroundMusic.pause();
+    }
+  }
+}
+
+function setupMusicControls() {
+  document.addEventListener("click", playMusic, { once: true });
+  document.getElementById("music-toggle").addEventListener("click", () => playMusic());
+  document.getElementById("skip-track").addEventListener("click", () => playMusic(true));
+  AUDIO_backgroundMusic.addEventListener("ended", nextTrack);
+}
+
+function nextTrack() {
+  currentTrackIndex = (currentTrackIndex + 1) % soundtracks.length;
+  AUDIO_backgroundMusic.src = soundtracks[currentTrackIndex];
+  AUDIO_backgroundMusic.play();
+}
+
+async function fetchToJson(url) {
+  const response = await fetch(url);
+  return response.json();
 }
 
 async function fetchALLPokemonToSearch() {
   try {
-    const pokemonListResponse = await fetch("https://pokeapi.co/api/v2/pokemon?limit=1010");
-    const pokemonListData = await pokemonListResponse.json();
-
+    const pokemonListData = await fetchToJson("https://pokeapi.co/api/v2/pokemon?limit=1010");
     const batchSize = 50;
     for (let i = 20; i < pokemonListData.results.length; i += batchSize) {
       const batch = pokemonListData.results.slice(i, i + batchSize);
-
-      const batchPokemon = await Promise.all(
-        batch.map(async (pokemon) => {
-          const pokemonInfoResponse = await fetch(pokemon.url);
-          return await pokemonInfoResponse.json();
-        })
-      );
-
+      const batchPokemon = await Promise.all(batch.map(pokemon => fetchToJson(pokemon.url)));
       allPokemon = [...allPokemon, ...batchPokemon];
     }
   } catch (error) {
@@ -38,18 +57,9 @@ async function fetchALLPokemonToSearch() {
 
 async function fetchAllPokemons() {
   const display = document.getElementById("pokemon-display");
-  
   try {
-    const pokemonListResponse = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=20&offset=${offset}`);
-    const pokemonListData = await pokemonListResponse.json();
-
-    const newPokemons = [];
-    for (let j = 0; j < pokemonListData.results.length; j++) {
-      const pokemonInfoResponse = await fetch(pokemonListData.results[j].url);
-      const pokemonInfo = await pokemonInfoResponse.json();
-      newPokemons.push(pokemonInfo);
-    }
-
+    const pokemonListData = await fetchToJson(`https://pokeapi.co/api/v2/pokemon?limit=20&offset=${offset}`);
+    const newPokemons = await Promise.all(pokemonListData.results.map(pokemon => fetchToJson(pokemon.url)));
     allPokemon = [...allPokemon, ...newPokemons];
     renderAllPokemonCards(newPokemons);
     offset += 20;
@@ -61,25 +71,41 @@ async function fetchAllPokemons() {
 }
 
 async function fetchAllPokemonDetails(limit = 15) {
-  const pokemonListResponse = await fetch("https://pokeapi.co/api/v2/pokemon?limit=1010");
-  const pokemonListData = await pokemonListResponse.json();  
-
-  const allPokemonDetails = [];
-  for (let i = 0; i < pokemonListData.results.length; i++) {
-    const pokemonInfoResponse = await fetch(pokemonListData.results[i].url);
-    const pokemonInfo = await pokemonInfoResponse.json();
-    allPokemonDetails.push(pokemonInfo);
-
-    if (allPokemonDetails.length >= limit) {
-      return allPokemonDetails;
+  try {
+    const pokemonListData = await fetchToJson("https://pokeapi.co/api/v2/pokemon?limit=1010");
+    const allPokemonDetails = [];
+    for (let i = 0; i < pokemonListData.results.length; i++) {
+      const pokemonInfo = await fetchToJson(pokemonListData.results[i].url);
+      allPokemonDetails.push(pokemonInfo);
+      if (allPokemonDetails.length >= limit) {
+        return allPokemonDetails;
+      }
     }
+  } catch (error) {
+    console.error("Fehler beim Abrufen der Pokémon-Details:", error);
+  }
+}
+
+async function fetchTypesFromAPI() {
+  try {
+    return (await fetchToJson("https://pokeapi.co/api/v2/type/")).results;
+  } catch (error) {
+    console.error("Fehler beim Abrufen der Typen:", error);
+    return [];
+  }
+}
+
+async function fetchGenerationsFromAPI() {
+  try {
+    return (await fetchToJson("https://pokeapi.co/api/v2/generation/")).results;
+  } catch (error) {
+    console.error("Fehler beim Abrufen der Generationen:", error);
+    return [];
   }
 }
 
 async function fetchMorePokemons() {
   toggleLoadingScreen(true);
-  
-
   try {
     await fetchAllPokemons();
   } catch (error) {
@@ -91,21 +117,16 @@ async function fetchMorePokemons() {
 
 async function fetchEvolutions(pokemonId) {
   try {
-    const speciesData = await (
-      await fetch(`https://pokeapi.co/api/v2/pokemon-species/${pokemonId}`)).json();
-    const evolutionData = await (
-      await fetch(speciesData.evolution_chain.url)).json();
-      
+    const speciesData = await fetchToJson(`https://pokeapi.co/api/v2/pokemon-species/${pokemonId}`);
+    const evolutionData = await fetchToJson(speciesData.evolution_chain.url);
     let current = evolutionData.chain;
     globalEvolutions = [];
     while (current) {
       const id = current.species.url.split("/").slice(-2, -1)[0];
       globalEvolutions.push({ id, name: current.species.name });
-      current = current.evolves_to[0];
-    }
+      current = current.evolves_to[0];}
     return globalEvolutions;
-  } catch (error) {
-    console.error("Fehler beim Abrufen der Evolutionsdaten:", error);
+  } catch (error) { console.error("Fehler beim Abrufen der Evolutionsdaten:", error);
     return [];
   }
 }
@@ -136,30 +157,6 @@ async function navigatePokemon(direction) {
   const evolutions = await fetchEvolutions(pokemon.id);
   AUDIO_nextPkmn.play();
   renderOverlay(currentPokemonIndex, evolutions);
-}
-
-async function fetchTypesFromAPI() {
-  try {
-    const response = await fetch("https://pokeapi.co/api/v2/type/");
-    const data = await response.json();
-
-    return data.results;
-  } catch (error) {
-    console.error("Fehler beim Abrufen der Typen:", error);
-    return [];
-  }
-}
-
-async function fetchGenerationsFromAPI() {
-  try {
-    const response = await fetch("https://pokeapi.co/api/v2/generation/");
-    const data = await response.json();
-
-    return data.results;
-  } catch (error) {
-    console.error("Fehler beim Abrufen der Generationen:", error);
-    return [];
-  }
 }
 
 function capitalize(string) {

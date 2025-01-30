@@ -4,6 +4,7 @@
 }
 
 .logo2 {
+  margin-left: 40px;
   width: 200px;
 }
 
@@ -43,6 +44,9 @@
 @media (max-width: 500px) {
   .logo {
     display: none;
+  }
+  .logo2 {
+    margin-left: 0;
   }
   .overlay-img {
     width: 30% !important;
