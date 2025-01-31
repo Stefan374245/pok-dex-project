@@ -1,10 +1,9 @@
 function renderStatsBars(pokemon, allPokemonStats) {
     const chartContainer = document.querySelector('.stats-bar-chart');
     chartContainer.innerHTML = '';
-    const labels = ['HP', 'Angriff', 'Verteidigung', 'Spez. Angriff', 'Spez. Verteidigung', 'Initiative'];
+    const labels = ['HP', 'Angriff', 'Verteidigung', 'Spez. Angriff', 'Spez. Verteidigung', 'Speed'];
     const colors = ['#ff6384', '#36a2eb', '#ffcd56', '#4bc0c0', '#9966ff', '#ff9f40'];
     const maxStats = calculateMaxStats(allPokemonStats);
-  
     let maxScale = 0;
     
     for (let i = 0; i < maxStats.length; i++) {
@@ -15,40 +14,22 @@ function renderStatsBars(pokemon, allPokemonStats) {
   
     let chartHTML = '';
     for (let i = 0; i < labels.length; i++) {
-      chartHTML += createStatGroupHTML(
+      chartHTML += renderStatGroup(
         labels[i],pokemon.stats[i]?.base_stat || 0,maxStats[i],maxScale,colors[i]
       );
     }
     chartContainer.innerHTML = chartHTML;
   }
-  
-  // Hilfs Functions
 
-  function createStatGroupHTML(labelText, statValue, maxValue, maxScale, color) {
+  function renderStatGroup(labelText, statValue, maxValue, maxScale, color) {
     const pokemonBarWidth = (statValue / maxScale) * 100;
-  
-    return `
-      <div class="stat-group">
-        <div class="stat-label">${labelText}</div>
-        <div class="stat-bar-container">
-          <div class="stat-bar max-bar" title="Stärkstes Pokémon: ${maxValue}"></div>
-          <div class="stat-bar pokemon-bar" style="--pokemon-bar-width: ${pokemonBarWidth}%; --pokemon-bar-color: ${color};" title="${labelText}: ${statValue}"></div>
-        </div>
-      </div>
-    `;
+    return statBarTemplate(labelText, statValue, maxValue, pokemonBarWidth, color);
   }
 
   function renderEmptyStatsBars(labels) {
     let emptyStatsHTML = '';
     for (let i = 0; i < labels.length; i++) {
-      emptyStatsHTML += `
-        <div class="stat-group">
-          <div class="stat-label">${labels[i]}</div>
-          <div class="stat-bar-container">
-            <div class="stat-bar empty-bar" title="Keine Daten">???</div>
-          </div>
-        </div>
-      `;
+      emptyStatsHTML += emptyStatBarTemplate;
     }
     return emptyStatsHTML;
   }

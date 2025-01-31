@@ -16,7 +16,6 @@
     text-align: center;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   }
- 
   
 .prev-btn-pkmn, .next-btn-pkmn {
   position: absolute;
@@ -39,7 +38,6 @@
     transition: ease 0.2s;
   }
  
-  
   .overlay-arrow.left, .prev-btn-pkmn {
     left: 64px;
   }
@@ -89,7 +87,6 @@
     width: 20% !important;
   }
   
-  
   .loading-gif {
     width: 160px;
     height: 160px;
@@ -133,7 +130,7 @@
     }
   
     .evolution-section p {
-      font-size: 14px;
+      font-size: 16px;
     }
   }
   

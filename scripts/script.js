@@ -9,37 +9,12 @@ async function init() {
   document.getElementById("search-bar").addEventListener("blur", resetSearch);
   fetchALLPokemonToSearch();
   setupMusicControls();
-}
-
-function playMusic(skip = false) {
-  if (skip) {
-    nextTrack();
-  } else {
-    if (AUDIO_backgroundMusic.paused) {
-      AUDIO_backgroundMusic.play();
-    } else {
-      AUDIO_backgroundMusic.pause();
-    }
-  }
-}
-
-function setupMusicControls() {
-  document.addEventListener("click", playMusic, { once: true });
-  document.getElementById("music-toggle").addEventListener("click", () => playMusic());
-  document.getElementById("skip-track").addEventListener("click", () => playMusic(true));
-  AUDIO_backgroundMusic.addEventListener("ended", nextTrack);
-}
-
-function nextTrack() {
-  currentTrackIndex = (currentTrackIndex + 1) % soundtracks.length;
-  AUDIO_backgroundMusic.src = soundtracks[currentTrackIndex];
-  AUDIO_backgroundMusic.play();
-}
+};
 
 async function fetchToJson(url) {
   const response = await fetch(url);
   return response.json();
-}
+};
 
 async function fetchALLPokemonToSearch() {
   try {
@@ -53,7 +28,7 @@ async function fetchALLPokemonToSearch() {
   } catch (error) {
     console.error("Fehler beim Laden aller Pokémon:", error);
   }
-}
+};
 
 async function fetchAllPokemons() {
   const display = document.getElementById("pokemon-display");
@@ -68,7 +43,7 @@ async function fetchAllPokemons() {
   } finally {
     toggleLoadingScreen(false);
   }
-}
+};
 
 async function fetchAllPokemonDetails(limit = 15) {
   try {
@@ -84,7 +59,7 @@ async function fetchAllPokemonDetails(limit = 15) {
   } catch (error) {
     console.error("Fehler beim Abrufen der Pokémon-Details:", error);
   }
-}
+};
 
 async function fetchTypesFromAPI() {
   try {
@@ -93,7 +68,7 @@ async function fetchTypesFromAPI() {
     console.error("Fehler beim Abrufen der Typen:", error);
     return [];
   }
-}
+};
 
 async function fetchGenerationsFromAPI() {
   try {
@@ -102,7 +77,7 @@ async function fetchGenerationsFromAPI() {
     console.error("Fehler beim Abrufen der Generationen:", error);
     return [];
   }
-}
+};
 
 async function fetchMorePokemons() {
   toggleLoadingScreen(true);
@@ -113,7 +88,7 @@ async function fetchMorePokemons() {
   } finally {
     toggleLoadingScreen(false);
   }
-}
+};
 
 async function fetchEvolutions(pokemonId) {
   try {
@@ -129,7 +104,7 @@ async function fetchEvolutions(pokemonId) {
   } catch (error) { console.error("Fehler beim Abrufen der Evolutionsdaten:", error);
     return [];
   }
-}
+};
 
 function toggleLoadingScreen(show) {
   const loadingScreen = document.getElementById("loading-screen");
@@ -141,7 +116,7 @@ function toggleLoadingScreen(show) {
     loadingScreen.classList.add("d-none");
     body.style.overflow = "";
   }
-}
+};
 
 async function navigatePokemon(direction) {
   if (!currentPokemon || currentPokemon.length === 0) {
@@ -157,8 +132,8 @@ async function navigatePokemon(direction) {
   const evolutions = await fetchEvolutions(pokemon.id);
   AUDIO_nextPkmn.play();
   renderOverlay(currentPokemonIndex, evolutions);
-}
+};
 
 function capitalize(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
-}
+};
