@@ -35,13 +35,7 @@ function resetSearch() {
   }
 }
 
-async function filterByType(
-  type,
-  offset = 0,
-  limit = 15,
-  filteredPokemons = [],
-  loadmore = false
-) {
+async function filterByType(type, offset = 0, limit = 15, filteredPokemons = [], loadmore = false) {
   toggleLoadingScreen(true);
   let loadbtn = document.getElementById("load-more-button");
   currentFilter = { type, generation: null };
@@ -56,13 +50,7 @@ async function filterByType(
   }
 }
 
-async function fetchTypePokemons(
-  type,
-  offset,
-  limit,
-  filteredPokemons,
-  loadMore
-) {
+async function fetchTypePokemons(type, offset, limit, filteredPokemons, loadMore) {
   const pokemonListResponse = await fetch(
     "https://pokeapi.co/api/v2/type/" + type
   );
@@ -80,24 +68,12 @@ async function fetchTypePokemons(
   renderAllPokemonCards(filteredPokemons, loadMore);
 }
 
-async function filterByGeneration(
-  generation,
-  offset = 0,
-  limit = 15,
-  filteredPokemons = [],
-  loadmore = false
-) {
+async function filterByGeneration(generation, offset = 0, limit = 15, filteredPokemons = [], loadmore = false) {
   toggleLoadingScreen(true);
   let loadbtn = document.getElementById("load-more-button");
   currentFilter = { type: null, generation };
   try {
-    await fetchGenerationPokemon(
-      generation,
-      offset,
-      limit,
-      filteredPokemons,
-      loadmore
-    );
+    await fetchGenerationPokemon(generation, offset, limit, filteredPokemons, loadmore);
   } catch (error) {
     console.error("Fehler beim Filtern nach Generation:", error);
   } finally {
@@ -106,13 +82,7 @@ async function filterByGeneration(
   }
 }
 
-async function fetchGenerationPokemon(
-  generation,
-  offset,
-  limit,
-  filteredPokemons,
-  loadmore
-) {
+async function fetchGenerationPokemon( generation, offset, limit, filteredPokemons, loadmore) {
   const generationResponse = await fetch(
     `https://pokeapi.co/api/v2/generation/${generation}`
   );
@@ -135,13 +105,7 @@ function loadMoreTypesOrGeneration(offset, filteredPokemons = []) {
   if (currentFilter.type) {
     filterByType(currentFilter.type, offset + 16, 15, filteredPokemons, true);
   } else if (currentFilter.generation) {
-    filterByGeneration(
-      currentFilter.generation,
-      offset + 16,
-      15,
-      filteredPokemons,
-      true
-    );
+    filterByGeneration(currentFilter.generation, offset + 16, 15, filteredPokemons, true);
   }
 }
 

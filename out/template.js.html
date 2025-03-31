@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: template.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: template.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Erstellt das HTML-Template für eine Pokémon-Karte.
+ *
+ * @function pokemonCardTemplate
+ * @param {Object} pokemon - Das Pokémon-Objekt mit allen relevanten Daten.
+ * @returns {string} - HTML-String für die Pokémon-Karte.
+ */
+function pokemonCardTemplate(pokemon) {
+  const pokemonType = pokemon.types[0].type.name || "Unbekannt";
+  const cardColor =
+    typeColors[pokemonType] || "linear-gradient(135deg, #e0e0e0, #ffffff)";
+  const artworkUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png`;
+  const typeIcon = typeIcons[pokemonType] || "";
+
+  return `
+        &lt;div class="card pokemon-card text-center" style="background: ${cardColor}">
+          &lt;div class="card-header bg-light">
+            &lt;span class="card-title">
+            &lt;b>${pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}&lt;/b>
+            &lt;/span>
+          &lt;span class="card-hp">
+            KP ${pokemon.stats[0].base_stat}
+            &lt;img src="${typeIcon}" alt="${pokemonType}" class="type-icon ms-2">
+          &lt;/span>
+        &lt;/div>
+        &lt;div class="card-body">
+          &lt;img onclick="openPokemonOverlay(${pokemon.id})" class="card-image img-fluid" src="${artworkUrl}" alt="${pokemon.name}">
+        &lt;/div>
+        &lt;div class="card-body card-info">
+        &lt;hr>
+          &lt;p class="text-muted">${getTypeText(pokemon.types)} &lt;/p>
+          &lt;div class ="card-hp">
+           &lt;img onclick="openPokemonOverlay(${pokemon.id})" src="${typeIcon}" alt="${pokemonType}" class="type-icon ms-2 ">
+           &lt;/div>
+          &lt;hr>
+          &lt;button onclick="openPokemonOverlay(${pokemon.id})" type="button" class="btn btn-danger">Info&lt;/button>
+        &lt;/div>
+      &lt;/div>
+`;
+}
+
+/**
+ * Erstellt das HTML-Template für das Overlay eines Pokémon.
+ *
+ * @function overlayTemplate
+ * @param {Object} pokemon - Das Pokémon-Objekt mit allen relevanten Daten.
+ * @param {Array} evolutions - Eine Liste der Evolutionsdaten des Pokémon.
+ * @returns {string} - HTML-String für das Pokémon-Overlay.
+ */
+function overlayTemplate(pokemon, evolutions) {
+  const artworkUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png`;
+  const typeNames = getTypeText(pokemon.types);
+
+  return `
+    &lt;div class="overlay-content">
+      &lt;button onclick="closePokemonOverlay()" class="btn-close-white btn-close">&lt;/button>
+          &lt;button class="carousel-control-prev">
+            &lt;span onclick="navigatePokemon(-1)" class="carousel-control-prev-icon prev-btn-pkmn">&lt;/span>
+            &lt;span  class="visually-hidden">Vorherige&lt;/span>
+          &lt;/button>
+          &lt;button class="carousel-control-next">
+            &lt;span onclick="navigatePokemon(1)" class="carousel-control-next-icon next-btn-pkmn">&lt;/span>
+            &lt;span class="visually-hidden">Nächste&lt;/span>
+          &lt;/button>
+            &lt;h1>${pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}&lt;/h1>
+            &lt;img src="${artworkUrl}" alt="${pokemon.name}" class="img-fluid overlay-img" />
+            &lt;p>${typeNames}&lt;/p>
+        &lt;div id="pokemonCarousel" class="carousel slide mt-4" data-bs-ride="carousel">
+          &lt;div class="carousel-indicators">
+            &lt;button type="button" data-bs-target="#pokemonCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Main">&lt;/button>
+            &lt;button type="button" data-bs-target="#pokemonCarousel" data-bs-slide-to="1" aria-label="Stats">&lt;/button>
+            &lt;button type="button" data-bs-target="#pokemonCarousel" data-bs-slide-to="2" aria-label="Evolutions">&lt;/button>
+        &lt;/div>
+        &lt;div class="carousel-inner">
+          &lt;div class="carousel-item active show">
+            &lt;div class="carousel-caption d-md-block">
+              &lt;h5>Statistik&lt;/h5>
+              &lt;div class="stats-bar-chart">&lt;/div>
+              &lt;div class="stat-legend">
+              &lt;span>
+              &lt;div class="legend-box max">&lt;/div>
+              Stärkstes Pokémon
+              &lt;/span>
+            &lt;/div>
+        &lt;/div>
+      &lt;/div>
+      &lt;div class="carousel-item show">
+        &lt;div class="carousel-caption d-md-block">
+          &lt;h5>Basis-Attribute&lt;/h5>
+            &lt;p>Größe: ${(pokemon.height / 10).toFixed(1)} m&lt;/p>
+            &lt;p>Gewicht: ${(pokemon.weight / 10).toFixed(1)} kg&lt;/p>
+          &lt;div class="card-moves">
+            &lt;h3>
+                ${pokemon.moves[0]?.move.name
+                  ? pokemon.moves[0].move.name.charAt(0).toUpperCase() +
+                    pokemon.moves[0].move.name.slice(1)
+                  : "Unbekannt"}
+              &lt;span class="badge bg-danger damage">
+                Damage ${
+                  pokemon.moves[0]?.move.name
+                    ? Math.floor(Math.random() * 50 + 10)
+                    : "?"
+                }
+              &lt;/span>
+            &lt;/h3>
+            &lt;h3>
+                ${pokemon.moves[1]?.move.name
+                  ? pokemon.moves[1].move.name.charAt(0).toUpperCase() +
+                    pokemon.moves[1].move.name.slice(1)
+                  : "Unbekannt"}
+              &lt;span class="badge bg-danger damage">
+                Damage ${
+                  pokemon.moves[1]?.move.name
+                    ? Math.floor(Math.random() * 50 + 10)
+                    : "?"
+                }
+              &lt;/span>
+            &lt;/h3>
+          &lt;/div>
+        &lt;/div>
+      &lt;/div>
+      &lt;div class="carousel-item show">
+        &lt;div class="carousel-caption carousel-caption-evo d-md-block evolution-imgs">
+          &lt;h5>Evolutionsstufen&lt;/h5>
+          ${renderEvolutionCard(evolutions)}
+        &lt;/div>
+      &lt;/div>
+    &lt;/div>
+    &lt;div>
+      &lt;button class="carousel-control-prev" type="button" data-bs-target="#pokemonCarousel" data-bs-slide="prev">
+          &lt;span class="carousel-control-prev-icon" aria-hidden="true">&lt;/span>
+          &lt;span class="visually-hidden">Vorherige&lt;/span>
+      &lt;/button>
+      &lt;button class="carousel-control-next" type="button" data-bs-target="#pokemonCarousel"data-bs-slide="next">
+            &lt;span class="carousel-control-next-icon" aria-hidden="true">&lt;/span>
+            &lt;span class="visually-hidden">Nächste&lt;/span>
+        &lt;/button>
+    &lt;/div>
+  &lt;/div>
+  `;
+}
+
+/**
+ * Erstellt das HTML-Template für eine Evolution eines Pokémon.
+ *
+ * @function evolutionTemplate
+ * @param {Object} evo - Das Evolutionsobjekt mit den relevanten Daten.
+ * @returns {string} - HTML-String für die Evolution.
+ */
+function evolutionTemplate(evo) {
+  return `
+      &lt;div class="text-center">
+        &lt;div class="evolution-section">
+            &lt;img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${
+              evo.id
+            }.png" alt="${evo.name}" class="img-fluid evo-img">
+           &lt;p>${evo.name.charAt(0).toUpperCase() + evo.name.slice(1)}&lt;/p>
+        &lt;/div>
+      &lt;/div>
+  `;
+}
+
+/**
+ * Erstellt den Text für die Typen eines Pokémon.
+ *
+ * @function getTypeText
+ * @param {Array} types - Eine Liste der Typen des Pokémon.
+ * @returns {string} - HTML-String mit den Typen des Pokémon.
+ */
+function getTypeText(types) {
+  let typeText = "";
+  for (let i = 0; i &lt; types.length; i++) {
+    typeText += `&lt;span class="pokemon-type">${types[i].type.name.toUpperCase()}&lt;/span>`;
+    if (i &lt; types.length - 1) {
+      typeText += " / ";
+    }
+  }
+  return typeText;
+}
+
+/**
+ * Erstellt das HTML-Template für die Filteroptionen.
+ *
+ * @function filterTemplate
+ * @returns {string} - HTML-String für die Filteroptionen.
+ */
+function filterTemplate() {
+  const typeOptions = generateTypeOptions(pokemonTypes);
+  const generationOptions = generateGenerationOptions(pokemonGenerations);
+
+  return `
+    &lt;div id="filter-controls" class="filter-controls">
+      &lt;div class="dropdown">
+        &lt;button class="btn btn-warning custom-btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+          Filter nach Typ
+        &lt;/button>
+        &lt;ul class="dropdown-menu">
+          ${typeOptions}
+        &lt;/ul>
+      &lt;/div>
+      &lt;div class="dropdown">
+        &lt;button class="btn btn-warning custom-btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+          Filter nach Generation
+        &lt;/button>
+        &lt;ul class="dropdown-menu">
+          ${generationOptions}
+        &lt;/ul>
+      &lt;/div>
+    &lt;/div>
+  `;
+}
+
+/**
+ * Erstellt das HTML-Template für eine Statistik-Balkengruppe.
+ *
+ * @function statBarTemplate
+ * @param {string} labelText - Der Name des Attributs (z. B. "HP").
+ * @param {number} statValue - Der Wert des Attributs für das Pokémon.
+ * @param {number} maxValue - Der maximale Wert dieses Attributs unter allen Pokémon.
+ * @param {number} pokemonBarWidth - Die Breite des Balkens in Prozent.
+ * @param {string} color - Die Farbe des Balkens.
+ * @returns {string} - HTML-String für die Statistik-Balkengruppe.
+ */
+function statBarTemplate(labelText, statValue, maxValue, pokemonBarWidth, color) {
+  return `
+    &lt;div class="stat-group">
+      &lt;div class="stat-label">${labelText}&lt;/div>
+      &lt;div class="stat-bar-container">
+        &lt;div class="stat-bar max-bar" title="Stärkstes Pokémon: ${maxValue}">&lt;/div>
+        &lt;div class="stat-bar pokemon-bar" style="--pokemon-bar-width: ${pokemonBarWidth}%; --pokemon-bar-color: ${color};" title="${labelText}: ${statValue}">&lt;/div>
+      &lt;/div>
+    &lt;/div>
+  `;
+}
+
+/**
+ * Erstellt das HTML-Template für leere Statistik-Balken.
+ *
+ * @function emptyStatBarTemplate
+ * @param {Array} labels - Eine Liste von Attributnamen.
+ * @returns {string} - HTML-String für die leeren Statistik-Balken.
+ */
+function emptyStatBarTemplate(labels) {
+  return `
+        &lt;div class="stat-group">
+          &lt;div class="stat-label">${labels[i]}&lt;/div>
+          &lt;div class="stat-bar-container">
+            &lt;div class="stat-bar empty-bar" title="Keine Daten">???&lt;/div>
+          &lt;/div>
+        &lt;/div>
+      `;
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#emptyStatBarTemplate">emptyStatBarTemplate</a></li><li><a href="global.html#evolutionTemplate">evolutionTemplate</a></li><li><a href="global.html#filterTemplate">filterTemplate</a></li><li><a href="global.html#getTypeText">getTypeText</a></li><li><a href="global.html#overlayTemplate">overlayTemplate</a></li><li><a href="global.html#pokemonCardTemplate">pokemonCardTemplate</a></li><li><a href="global.html#statBarTemplate">statBarTemplate</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Mon Mar 31 2025 10:56:26 GMT+0200 (Mitteleuropäische Sommerzeit)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
